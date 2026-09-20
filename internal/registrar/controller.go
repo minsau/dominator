@@ -43,3 +43,38 @@ func (c *Controller) GetHealth(ctx context.Context) (HealthResponse, error) {
 		RoutesServed: count,
 	}, nil
 }
+
+func (c *Controller) UpsertRoute(ctx context.Context, route Route) (Route, error) {
+	if route.ProjectSlug == "" {
+		route.ProjectSlug = route.Slug
+	}
+	if route.ProjectSlug == "" {
+		return Route{}, fmt.Errorf("project_slug is required")
+	}
+	if route.Host == "" {
+		return Route{}, fmt.Errorf("host is required")
+	}
+	if route.Backend == "" {
+		return Route{}, fmt.Errorf("backend is required")
+	}
+	return c.repo.UpsertRoute(ctx, route)
+}
+
+func (c *Controller) DeleteRoutesBySlug(ctx context.Context, slug string) error {
+	if slug == "" {
+		return fmt.Errorf("slug is required")
+	}
+	return c.repo.DeleteRoutesBySlug(ctx, slug)
+}
+
+func (c *Controller) GetRoutesBySlug(ctx context.Context, slug string) ([]Route, error) {
+	if slug == "" {
+		return nil, fmt.Errorf("slug is required")
+	}
+	return c.repo.GetRoutesBySlug(ctx, slug)
+}
+
+func (c *Controller) ListRoutes(ctx context.Context) ([]Route, error) {
+	return c.repo.GetRoutes(ctx)
+}
+
