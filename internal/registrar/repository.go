@@ -22,9 +22,9 @@ func NewPostgresRepository(db *sql.DB) *PostgresRepository {
 
 func (r *PostgresRepository) GetRoutes(ctx context.Context) ([]Route, error) {
 	query := `
-		SELECT project_slug, host, backend, auth_required, updated_at
+		SELECT project_slug, host, backend, auth_required, internal_only, updated_at
 		FROM routes
-		ORDER BY project_slug ASC
+		ORDER BY project_slug ASC, host ASC
 	`
 	rows, err := r.db.QueryContext(ctx, query)
 	if err != nil {
@@ -40,6 +40,7 @@ func (r *PostgresRepository) GetRoutes(ctx context.Context) ([]Route, error) {
 			&route.Host,
 			&route.Backend,
 			&route.AuthRequired,
+			&route.InternalOnly,
 			&route.UpdatedAt,
 		); err != nil {
 			return nil, fmt.Errorf("failed to scan route: %w", err)

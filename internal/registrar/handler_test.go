@@ -66,9 +66,9 @@ func TestHandler_TraefikConfig(t *testing.T) {
 		t.Fatalf("Failed to unmarshal response: %v", err)
 	}
 
-	router, exists := resp.HTTP.Routers["my-app"]
+	router, exists := resp.HTTP.Routers["my-app-minsau-dev"]
 	if !exists {
-		t.Fatalf("Expected router 'my-app' not found")
+		t.Fatalf("Expected router 'my-app-minsau-dev' not found")
 	}
 	if router.Rule != "Host(`my-app.minsau.dev`)" {
 		t.Errorf("Unexpected rule: %s", router.Rule)

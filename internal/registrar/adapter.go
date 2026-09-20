@@ -12,7 +12,7 @@ func BuildTraefikConfig(routes []Route) TraefikConfigResponse {
 	services := make(map[string]ServiceConfig)
 
 	for _, route := range routes {
-		if route.ProjectSlug == "" {
+		if route.ProjectSlug == "" || route.Host == "" {
 			continue
 		}
 
@@ -22,21 +22,30 @@ func BuildTraefikConfig(routes []Route) TraefikConfigResponse {
 			backendURL = "http://" + backendURL
 		}
 
+		name := strings.ReplaceAll(route.Host, ".", "-")
+
 		// Traefik dynamic router
 		router := RouterConfig{
 			Rule:        fmt.Sprintf("Host(`%s`)", route.Host),
-			Service:     route.ProjectSlug,
+			Service:     name,
 			EntryPoints: []string{"web", "websecure"},
 		}
 
+		var mws []string
+		if route.InternalOnly {
+			mws = append(mws, "lan-only@file")
+		}
 		if route.AuthRequired {
-			router.Middlewares = []string{"auth@file"}
+			mws = append(mws, "auth@file")
+		}
+		if len(mws) > 0 {
+			router.Middlewares = mws
 		}
 
-		routers[route.ProjectSlug] = router
+		routers[name] = router
 
 		// Traefik dynamic service
-		services[route.ProjectSlug] = ServiceConfig{
+		services[name] = ServiceConfig{
 			LoadBalancer: LoadBalancerConfig{
 				Servers: []ServerConfig{
 					{URL: backendURL},
