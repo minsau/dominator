@@ -26,7 +26,7 @@ func BuildTraefikConfig(routes []Route) TraefikConfigResponse {
 		router := RouterConfig{
 			Rule:        fmt.Sprintf("Host(`%s`)", route.Host),
 			Service:     route.ProjectSlug,
-			EntryPoints: []string{"web"},
+			EntryPoints: []string{"web", "websecure"},
 		}
 
 		if route.AuthRequired {

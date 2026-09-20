@@ -48,7 +48,7 @@ func TestBuildTraefikConfig_SingleRouteWithoutAuth(t *testing.T) {
 	if router.Service != "armario" {
 		t.Errorf("Unexpected service: %s", router.Service)
 	}
-	if len(router.EntryPoints) != 1 || router.EntryPoints[0] != "web" {
+	if len(router.EntryPoints) != 2 || router.EntryPoints[0] != "web" || router.EntryPoints[1] != "websecure" {
 		t.Errorf("Unexpected entry points: %v", router.EntryPoints)
 	}
 	if len(router.Middlewares) != 0 {
