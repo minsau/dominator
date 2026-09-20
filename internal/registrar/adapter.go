@@ -45,8 +45,12 @@ func BuildTraefikConfig(routes []Route) TraefikConfigResponse {
 		}
 	}
 
+	if len(routes) == 0 {
+		return TraefikConfigResponse{}
+	}
+
 	return TraefikConfigResponse{
-		HTTP: HTTPConfig{
+		HTTP: &HTTPConfig{
 			Routers:  routers,
 			Services: services,
 		},

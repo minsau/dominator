@@ -22,12 +22,12 @@ type RouterConfig struct {
 }
 
 type HTTPConfig struct {
-	Routers  map[string]RouterConfig  `json:"routers"`
-	Services map[string]ServiceConfig `json:"services"`
+	Routers  map[string]RouterConfig  `json:"routers,omitempty"`
+	Services map[string]ServiceConfig `json:"services,omitempty"`
 }
 
 type TraefikConfigResponse struct {
-	HTTP HTTPConfig `json:"http"`
+	HTTP *HTTPConfig `json:"http,omitempty"`
 }
 
 type HealthResponse struct {

@@ -9,12 +9,8 @@ import (
 func TestBuildTraefikConfig_Empty(t *testing.T) {
 	cfg := BuildTraefikConfig(nil)
 
-	if cfg.HTTP.Routers == nil || cfg.HTTP.Services == nil {
-		t.Fatalf("Routers or Services map is nil")
-	}
-
-	if len(cfg.HTTP.Routers) != 0 || len(cfg.HTTP.Services) != 0 {
-		t.Fatalf("Expected 0 routers and services, got %d and %d", len(cfg.HTTP.Routers), len(cfg.HTTP.Services))
+	if cfg.HTTP != nil {
+		t.Fatalf("Expected HTTP to be nil for empty routes")
 	}
 
 	data, err := json.Marshal(cfg)
@@ -22,7 +18,7 @@ func TestBuildTraefikConfig_Empty(t *testing.T) {
 		t.Fatalf("Failed to marshal config: %v", err)
 	}
 
-	expectedJSON := `{"http":{"routers":{},"services":{}}}`
+	expectedJSON := `{}`
 	if string(data) != expectedJSON {
 		t.Errorf("Expected JSON %s, got %s", expectedJSON, string(data))
 	}
