@@ -22,7 +22,11 @@ func main() {
 	}))
 	slog.SetDefault(logger)
 
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		logger.Error("invalid configuration", "error", err)
+		os.Exit(1)
+	}
 	logger.Info("starting dominator service", "port", cfg.Port)
 
 	db, err := database.Connect(cfg.DatabaseURL)

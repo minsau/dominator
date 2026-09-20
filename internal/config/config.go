@@ -1,18 +1,24 @@
 package config
 
 import (
+	"errors"
 	"os"
 )
+
+// ErrMissingDatabaseURL is returned when DATABASE_URL is not set. There is no
+// default: the DSN carries a credential and must come from the environment
+// (Ansible injects it from the vault), never from source.
+var ErrMissingDatabaseURL = errors.New("DATABASE_URL is required")
 
 type Config struct {
 	DatabaseURL string
 	Port        string
 }
 
-func Load() *Config {
+func Load() (*Config, error) {
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		dbURL = "postgres://dominator_user:JuguitoDeDominator0228.@192.168.0.214:5432/dominator_db?sslmode=disable"
+		return nil, ErrMissingDatabaseURL
 	}
 
 	port := os.Getenv("PORT")
@@ -23,5 +29,5 @@ func Load() *Config {
 	return &Config{
 		DatabaseURL: dbURL,
 		Port:        port,
-	}
+	}, nil
 }
